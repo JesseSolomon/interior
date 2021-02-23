@@ -9,6 +9,7 @@ function app(shaders) {
 	addEventListener("resize", () => {
 		renderer.setSize(innerWidth, innerHeight);
 		camera.aspect = innerWidth / innerHeight;
+		camera.updateProjectionMatrix();
 	});
 
 	const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -18,7 +19,10 @@ function app(shaders) {
 		fragmentShader: shaders[1]
 	}));
 
+	const testBox = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.75, 0.5), new THREE.MeshBasicMaterial({ color: 0x00FF00 }));
+
 	scene.add(box);
+	scene.add(testBox);
 	camera.position.set(0, 0, -2);
 
 	function render() {
