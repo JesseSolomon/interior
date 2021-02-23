@@ -1,0 +1,14 @@
+{
+	"name": "interior",
+	"author": {
+		"email": "jessedsolomon@gmail.com",
+		"name": "Jesse Solomon",
+		"url": "https://jessesolomon.dev"
+	},
+	"devDependencies": {
+		"@types/three": "^0.125.1"
+	},
+	"scripts": {
+		"start": "http-server public -p 80"
+	}
+}
