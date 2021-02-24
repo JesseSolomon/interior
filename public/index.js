@@ -1,6 +1,6 @@
 function app(shaders) {
 	const scene = new THREE.Scene();
-	const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 10);
+	const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.01, 10);
 	const renderer = new THREE.WebGLRenderer();
 
 	renderer.setSize(innerWidth, innerHeight);
@@ -14,12 +14,22 @@ function app(shaders) {
 
 	const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
+	controls.minDistance = 1.1;
+
 	const box = new THREE.Mesh(new THREE.BoxGeometry(1, 1.5, 1), new THREE.ShaderMaterial({
 		vertexShader: shaders[0],
 		fragmentShader: shaders[1]
 	}));
 
-	const testBox = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.75, 0.5), new THREE.MeshBasicMaterial({ color: 0x00FF00 }));
+	const testBox = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.75, 0.5), new THREE.ShaderMaterial({
+		vertexShader: shaders[0],
+		fragmentShader: shaders[2],
+		uniforms: {
+			face: {
+				value: 1
+			}
+		}
+	}));
 
 	scene.add(box);
 	scene.add(testBox);
@@ -36,6 +46,6 @@ function app(shaders) {
 	requestAnimationFrame(render);
 }
 
-Promise.all([ fetch("/vertex.glsl"), fetch("/fragment.glsl") ]) // fetch both the shaders
+Promise.all([ fetch("/vertex.glsl"), fetch("/outer_fragment.glsl"), fetch("/inner_fragment.glsl") ]) // fetch both the shaders
 .then(requests => Promise.all(requests.map(request => request.text()))) // convert the fetch responses to strings
 .then(app);
