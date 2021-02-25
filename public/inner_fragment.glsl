@@ -1,6 +1,8 @@
 in vec3 worldPosition;
+in vec3 worldNormal;
 
 uniform int face;
+uniform vec3 color;
 
 const vec2 corners[4] = vec2[](vec2(0.5, 0.5), vec2(-0.5, 0.5), vec2(-0.5, -0.5), vec2(0.5, -0.5));
 
@@ -16,35 +18,16 @@ void main() {
 	vec2 a = worldPosition.xz;
 	vec2 b = cameraPosition.xz;
 
-	int intersectedFace = -1;
+	int next = int(mod(float(face + 1), 4.0));
 
-	for (int i = 0; i < 4; i++) {
-		int next = int(mod(float(i + 1), 4.0));
+	vec2 c = corners[face];
+	vec2 d = corners[next];
 
-		vec2 c = corners[i];
-		vec2 d = corners[next];
-
-		if (intersect(a, b, c, d)) {
-			intersectedFace = i;
-			break;
-		}
+	if (!intersect(a, b, c, d)) {
+		discard;
 	}
+
+	float lighting = (1.0 - distance(worldNormal, vec3(0, 1, 0)) * 0.314);
 	
-	switch (intersectedFace) {
-		case -1:
-			gl_FragColor = vec4(1, 0, 1, 1);
-			break;
-		case 0:
-			gl_FragColor = vec4(1, 0, 0, 1);
-			break;
-		case 1:
-			gl_FragColor = vec4(0, 1, 0, 1);
-			break;
-		case 2:
-			gl_FragColor = vec4(0, 0, 1, 1);
-			break;
-		case 3:
-			gl_FragColor = vec4(0, 1, 1, 1);
-			break;
-	}
+	gl_FragColor = vec4(color * lighting, 1);
 }

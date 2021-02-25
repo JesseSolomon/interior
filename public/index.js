@@ -21,21 +21,74 @@ function app(shaders) {
 		fragmentShader: shaders[1]
 	}));
 
-	const testBox = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.75, 0.5), new THREE.ShaderMaterial({
+	const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.35, 16, 16), new THREE.ShaderMaterial({
+		vertexShader: shaders[0],
+		fragmentShader: shaders[2],
+		uniforms: {
+			face: {
+				value: 0
+			},
+			color: {
+				value: new THREE.Vector3(0, 0, 1)
+			}
+		}
+	}));
+
+	const cube = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.6, 0.6), new THREE.ShaderMaterial({
 		vertexShader: shaders[0],
 		fragmentShader: shaders[2],
 		uniforms: {
 			face: {
 				value: 1
+			},
+			color: {
+				value: new THREE.Vector3(1, 0, 0)
+			}
+		}
+	}));
+
+	const knot = new THREE.Mesh(new THREE.TorusKnotGeometry(0.3, 0.05), new THREE.ShaderMaterial({
+		vertexShader: shaders[0],
+		fragmentShader: shaders[2],
+		uniforms: {
+			face: {
+				value: 2
+			},
+			color: {
+				value: new THREE.Vector3(1, 0, 1)
+			}
+		}
+	}));
+
+	const cylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.3, 0.65, 18), new THREE.ShaderMaterial({
+		vertexShader: shaders[0],
+		fragmentShader: shaders[2],
+		uniforms: {
+			face: {
+				value: 3
+			},
+			color: {
+				value: new THREE.Vector3(0, 1, 0)
 			}
 		}
 	}));
 
 	scene.add(box);
-	scene.add(testBox);
+	scene.add(sphere);
+	scene.add(cube);
+	scene.add(knot);
+	scene.add(cylinder);
 	camera.position.set(0, 0, -2);
 
 	function render() {
+		sphere.position.y = Math.sin(performance.now() * 0.002) * 0.1;
+
+		cube.rotateX(0.01);
+		cube.rotateY(0.01);
+		cube.rotateZ(0.01);
+
+		cylinder.scale.set(1, Math.sin(performance.now() * 0.002), 1);
+
 		renderer.render(scene, camera);
 
 		requestAnimationFrame(render);
